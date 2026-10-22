@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: dealscout
+    runtime: node
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: ENABLE_MOCK_PROVIDER
+        value: "true"   # set to "false" once a real retailer API is configured

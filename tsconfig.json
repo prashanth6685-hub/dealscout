@@ -1,0 +1,1 @@
+{"compilerOptions":{"baseUrl":".","esModuleInterop":true,"forceConsistentCasingInFileNames":true,"isolatedModules":true,"jsx":"react-jsx","module":"ESNext","moduleResolution":"bundler","noEmit":true,"paths":{"@/*":["src/*"],"@shared/*":["shared/*"]},"skipLibCheck":true,"strict":true,"target":"ES2022","types":["vite/client"]},"include":["src","shared","vite.config.ts"]}
