@@ -22,6 +22,11 @@ describe('final price', () => {
     const f = finalPrice(offer({ coupon: { id: 'c', retailerId: 'a', code: 'FAKE', description: '', discountPercent: 50, verified: false } }));
     expect(f.discountApplied).toBe(0);
   });
+  it('membership/conditional coupons are displayed but never counted in the default total', () => {
+    const c = { id: 'c', retailerId: 'a', code: null, description: '', discountPercent: 5, verified: true, requirements: 'Requires Walmart+ membership' };
+    expect(couponEligibleForRanking(c, 200)).toBe(false);
+    expect(finalPrice(offer({ coupon: c })).discountApplied).toBe(0);
+  });
   it('expired coupon is ineligible; min-spend enforced', () => {
     expect(couponEligibleForRanking({ id: 'c', retailerId: 'a', code: null, description: '', verified: true, expiresAt: '2000-01-01' }, 100)).toBe(false);
     expect(couponEligibleForRanking({ id: 'c', retailerId: 'a', code: null, description: '', verified: true, minSpend: 200 }, 100)).toBe(false);

@@ -1,9 +1,14 @@
 import type { Coupon, Offer } from './types.js';
 
 /** Coupon is eligible for default final-price ranking only when verified,
- *  unexpired, min-spend met, and not already reflected in the item price. */
+ *  unexpired, min-spend met, and not already reflected in the item price.
+ *  A coupon with eligibility requirements (membership, specific payment
+ *  method, first order) is NEVER counted by default — DealScout has no
+ *  accounts, so it cannot know the user is eligible. It is displayed with
+ *  its condition, but the ranked total stays the everyone's-price. */
 export function couponEligibleForRanking(coupon: Coupon | undefined, subtotal: number, now = new Date()): boolean {
   if (!coupon || !coupon.verified) return false;
+  if (coupon.requirements) return false;
   if (coupon.expiresAt && new Date(coupon.expiresAt) < now) return false;
   if (coupon.startsAt && new Date(coupon.startsAt) > now) return false;
   if (coupon.minSpend != null && subtotal < coupon.minSpend) return false;

@@ -13,11 +13,11 @@ export default function ProductPage() {
   useEffect(() => { if (id) api<Detail>(`/api/products/${id}`).then(setD).catch(e => setErr(e.message)); }, [id]);
   const chart = useMemo(() => { if (!d) return []; const cutoff = Date.now() - RANGES[range] * 864e5;
     return d.series.filter(s => +new Date(s.observedAt) >= cutoff).map(s => ({ date: new Date(s.observedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: '2-digit' }), price: s.price })); }, [d, range]);
+  const drops = useMemo(() => { if (!d) return []; const out: { date: string; from: number; to: number }[] = []; let prev = Infinity;
+    for (const s of d.series) { if (s.price < prev - 0.01 && prev !== Infinity) out.push({ date: s.observedAt, from: prev, to: s.price }); prev = Math.min(prev, s.price); } return out.slice(-5).reverse(); }, [d]);
   if (err) return <main className="mx-auto max-w-5xl px-4 py-8"><ErrorState msg={err} /></main>;
   if (!d) return <main className="mx-auto max-w-5xl px-4 py-8"><div className="skeleton h-64 rounded-2xl" /></main>;
   const bestId = d.offers.find(o => finalPrice(o).total != null)?.id ?? d.offers[0]?.id;
-  const drops = useMemo(() => { const out: { date: string; from: number; to: number }[] = []; let prev = Infinity;
-    for (const s of d.series) { if (s.price < prev - 0.01 && prev !== Infinity) out.push({ date: s.observedAt, from: prev, to: s.price }); prev = Math.min(prev, s.price); } return out.slice(-5).reverse(); }, [d]);
   return <main className="mx-auto max-w-7xl px-4 py-6">
     <MockBanner show={d.isMockData} />
     <div className="grid lg:grid-cols-[380px_1fr] gap-6 mt-3">

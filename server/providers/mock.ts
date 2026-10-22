@@ -17,8 +17,9 @@ export const MockProvider: ProviderAdapter = {
       (p.model && normalize(query).includes(normalize(p.model))) ||
       q.split(' ').some(t => t.length > 3 && normalize(p.title).includes(t) && normalize(p.brand).includes(q.split(' ')[0] ?? '')));
     const ids = new Set(matched.map(p => p.id));
+    const stamp = new Date().toISOString();
     return { retailerId: 'mock', retailerName: this.name, status: 'ok',
-      products: matched, offers: ALL_OFFERS.filter(o => ids.has(o.productId)), coupons: COUPONS };
+      products: matched, offers: ALL_OFFERS.filter(o => ids.has(o.productId)).map(o => ({ ...o, lastCheckedAt: stamp })), coupons: COUPONS };
   },
 };
 export const notConfigured = (id: string, name: string, note: string): ProviderAdapter => ({
